@@ -37,22 +37,26 @@ Tone: Academic, authoritative, yet supportive peer.
 
 user_text = st.text_area("Paste your paragraph for the GEM Agent to assess:", height=300)
 
-if st.button("Analyze with GEM"):
+if st.button("🚀 Run GEM Analysis", use_container_width=True):
     if not api_key:
-        st.error("Please enter your API Key in the sidebar first!")
-    elif not user_text:
-        st.warning("Please paste a paragraph to analyze.")
+        st.error("⚠️ Please enter your Gemini API Key in the sidebar to begin.")
+    elif not user_content:
+        st.warning("⚠️ The input box is empty. Please paste your writing.")
     else:
         try:
+            # Configure Gemini
             genai.configure(api_key=api_key)
-           model = genai.GenerativeModel('gemini-1.5-flash-latest')
             
-            with st.spinner("The Agent is reviewing your AO1, AO2, and AO3..."):
-                response = model.generate_content([gem_prompt, user_text])
+            # This line must be indented exactly 12 spaces (or 3 tabs)
+            model = genai.GenerativeModel('gemini-1.5-flash-latest')
+            
+            with st.spinner("The GEM Agent is reviewing your work..."):
+                full_query = f"{GEM_SYSTEM_PROMPT}\n\nUSER SUBMISSION:\n{user_content}"
+                response = model.generate_content(full_query)
                 
-                st.success("Analysis Complete!")
+                st.success("Analysis Complete")
                 st.divider()
                 st.markdown(response.text)
                 
         except Exception as e:
-            st.error(f"An error occurred: {e}")
+            st.error(f"Error: {e}. Ensure your API key is valid.")
